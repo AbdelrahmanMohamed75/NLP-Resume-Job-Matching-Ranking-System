@@ -83,3 +83,54 @@ def build_candidate_features(job, resume, semantic_score):
     }
 
     return features
+
+def score_candidates(
+    model,
+    features,
+    job,
+    resumes,
+    candidate_indices,
+    semantic_scores
+):
+    """
+    Score and rank retrieved candidates.
+    """
+
+    results = []
+
+    for resume_idx, semantic_score in zip(
+        candidate_indices,
+        semantic_scores
+    ):
+
+        resume = resumes.iloc[resume_idx]
+
+        feature_values = build_candidate_features(
+            job=job,
+            resume=resume,
+            semantic_score=semantic_score
+        )
+
+        X = pd.DataFrame(
+            [[feature_values[feature] for feature in features]],
+            columns=features
+        )
+
+        score = model.predict_proba(X)[0, 1]
+
+        results.append({
+            "resume_idx": resume_idx,
+            "resume_id": resume["resume_id"],
+            "ranking_score": float(score)
+        })
+
+    results = sorted(
+        results,
+        key=lambda x: x["ranking_score"],
+        reverse=True
+    )
+
+    for rank, result in enumerate(results, start=1):
+        result["rank"] = rank
+
+    return results
