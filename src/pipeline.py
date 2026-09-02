@@ -157,3 +157,45 @@ def retrieve_candidates(
     )
 
     return candidate_indices, semantic_scores
+
+
+
+def run_matching_pipeline(
+    model,
+    features,
+    job,
+    resumes,
+    similarity_matrix,
+    job_idx,
+    top_k=10,
+    retrieval_k=500
+):
+    """
+    Run the complete resume-job matching pipeline.
+
+    Steps:
+    1. Semantic retrieval
+    2. Feature engineering
+    3. Learned ranking
+    4. Return top-K candidates
+    """
+
+    # Step 1: Retrieve candidates
+    candidate_indices, semantic_scores = retrieve_candidates(
+        similarity_matrix=similarity_matrix,
+        job_idx=job_idx,
+        top_k=retrieval_k
+    )
+
+    # Step 2 + 3: Feature engineering and ranking
+    ranked_candidates = score_candidates(
+        model=model,
+        features=features,
+        job=job,
+        resumes=resumes,
+        candidate_indices=candidate_indices,
+        semantic_scores=semantic_scores
+    )
+
+    # Step 4: Return final Top-K
+    return ranked_candidates[:top_k]
