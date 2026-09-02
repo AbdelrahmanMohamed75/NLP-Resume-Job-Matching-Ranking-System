@@ -1,0 +1,9 @@
+numpy
+pandas
+scikit-learn
+sentence-transformers
+lightgbm
+transformers
+accelerate
+matplotlib
+joblib
