@@ -134,3 +134,26 @@ def score_candidates(
         result["rank"] = rank
 
     return results
+
+
+
+from .retrieval import retrieve_top_k
+
+
+def retrieve_candidates(
+    similarity_matrix,
+    job_idx,
+    top_k=500
+):
+    """
+    Retrieve the most semantically similar
+    resumes for a given job.
+    """
+
+    candidate_indices, semantic_scores = retrieve_top_k(
+        similarity_matrix=similarity_matrix,
+        job_idx=job_idx,
+        top_k=top_k
+    )
+
+    return candidate_indices, semantic_scores
