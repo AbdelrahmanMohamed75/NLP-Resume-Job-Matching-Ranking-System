@@ -84,9 +84,16 @@ def predict(request: MatchRequest):
     }
 @app.post("/match")
 def match_candidates(request: MatchCandidatesRequest):
+    import pandas as pd
+
+    job = pd.Series(request.job.model_dump())
+
+    resumes = pd.DataFrame(
+        [resume.model_dump() for resume in request.resumes]
+     )
 
     return {
-        "job_id": request.job.job_id,
-        "number_of_resumes": len(request.resumes),
-        "message": "Matching endpoint is ready."
-    }
+        "job_id": job["job_id"],
+        "number_of_resumes": len(resumes),
+        "resume_ids": resumes["resume_id"].tolist()
+        }
