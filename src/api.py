@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 from .model import load_model
-
+from .pipeline import build_candidate_features
 
 app = FastAPI(
     title="Resume-Job Matching API",
