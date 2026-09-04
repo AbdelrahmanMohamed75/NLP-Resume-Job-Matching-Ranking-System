@@ -19,8 +19,29 @@ class HealthResponse(BaseModel):
     status: str
 
 
-class MatchRequest(BaseModel):
-    feature_values: dict
+class ResumeInput(BaseModel):
+    resume_id: str
+    role: str
+    seniority: str
+    years_experience: float
+    industry: str
+    skills: list[str]
+    text: str
+
+
+class JobInput(BaseModel):
+    job_id: str
+    job_title: str
+    seniority: str
+    industry: str
+    must_have_skills: list[str]
+    nice_to_have_skills: list[str]
+    text: str
+
+
+class MatchCandidatesRequest(BaseModel):
+    job: JobInput
+    resumes: list[ResumeInput]
 
 
 @app.get("/", response_model=HealthResponse)
