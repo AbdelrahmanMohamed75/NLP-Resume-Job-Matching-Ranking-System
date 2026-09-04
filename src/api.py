@@ -3,13 +3,11 @@ from pydantic import BaseModel
 
 from .model import load_model
 
-
 app = FastAPI(
     title="Resume-Job Matching API",
     description="NLP-based Resume–Job Matching and Ranking System",
     version="1.0.0"
 )
-
 
 # Load trained model once when the API starts
 model, features = load_model()
@@ -17,6 +15,10 @@ model, features = load_model()
 
 class HealthResponse(BaseModel):
     status: str
+
+
+class MatchRequest(BaseModel):
+    feature_values: dict
 
 
 @app.get("/", response_model=HealthResponse)
@@ -39,4 +41,21 @@ def model_info():
         "model": "Logistic Regression V2",
         "number_of_features": len(features),
         "features": features
+    }
+
+
+@app.post("/predict")
+def predict(request: MatchRequest):
+
+    import pandas as pd
+
+    X = pd.DataFrame(
+        [[request.feature_values[feature] for feature in features]],
+        columns=features
+    )
+
+    probability = model.predict_proba(X)[0, 1]
+
+    return {
+        "match_score": round(float(probability), 4)
     }
