@@ -82,3 +82,11 @@ def predict(request: MatchRequest):
     return {
         "match_score": round(float(probability), 4)
     }
+@app.post("/match")
+def match_candidates(request: MatchCandidatesRequest):
+
+    return {
+        "job_id": request.job.job_id,
+        "number_of_resumes": len(request.resumes),
+        "message": "Matching endpoint is ready."
+    }
