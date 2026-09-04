@@ -3,11 +3,13 @@ from pydantic import BaseModel
 
 from .model import load_model
 
+
 app = FastAPI(
     title="Resume-Job Matching API",
     description="NLP-based Resume–Job Matching and Ranking System",
     version="1.0.0"
 )
+
 
 # Load trained model once when the API starts
 model, features = load_model()
